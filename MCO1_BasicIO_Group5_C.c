@@ -178,11 +178,20 @@ void displayExchangeRate(Currencies Currencies[]){
 
 void currencyConversion(Account RegisteredAcc, Currencies Currencies[]){
     double convert = 0.0;
+    double sourceAmt = 0.0;
+    int approved = 0;
 
     printf("Foreign Currency Exchange\n");
-    printf("Source Amount (%s): %f\n", RegisteredAcc.Currency, RegisteredAcc.Balance);
-    printf("\n");
+    while(approved==0){
+        printf("Source Amount (%s): ", RegisteredAcc.Currency);
+        scanf("%lf", &sourceAmt);
+        if(sourceAmt<=0)
+            printf("Error: Please enter a valid amount\n");
+        else
+            approved = 1;
+    }
 
+    printf("\n");
     printf("Exchanged Currency\n");
     for (int i = 1; i<=6; i++){
         convert = RegisteredAcc.Balance * Currencies[i-1].Rate;
@@ -192,7 +201,7 @@ void currencyConversion(Account RegisteredAcc, Currencies Currencies[]){
     printf("\n");
     printf("----------------------------\n");
     printf("Source Currency = %s (%s)\n", Currencies[0].Name, Currencies[0].Code);
-    printf("Source Amount (%s) = %f\n", RegisteredAcc.Currency, RegisteredAcc.Balance);
+    printf("Source Amount (%s) = %f\n", RegisteredAcc.Currency, sourceAmt);
 }
 
 int main(){
@@ -231,6 +240,12 @@ int main(){
         else if (choice == 5){
             printf("\n");
             currencyConversion(RegisteredAcc, Currencies);
+            printf("\n");
+            MainMenu(&choice);
+        }
+        else if (choice == 6){
+            printf("\n");
+            printf("To be implemented...");
             printf("\n");
             MainMenu(&choice);
         }
