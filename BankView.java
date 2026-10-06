@@ -38,7 +38,7 @@ public class BankView{
     }
     public void displayRegisAcc(String accName){
         System.out.println();
-        System.out.print("***");
+        System.out.println("***");
         System.out.println("Account Name = " + accName);
     }
 
@@ -66,7 +66,7 @@ public class BankView{
         System.out.println();
         System.out.println("***");
         System.out.println("Account Name: " + accName);
-        System.out.println("Deposit Amount = " + depositAmt);
+        System.out.println("Deposit Amount = " + String.format("%.2f", depositAmt));
     }
 
     //---------------------------
@@ -78,7 +78,7 @@ public class BankView{
         System.out.println("Withdraw Amount");
         System.out.print("Account Name: ");
         String accName = scanner.nextLine();
-        System.out.println("Current Balance: " + defaultBalance);
+        System.out.println("Current Balance: " + String.format("%.2f", defaultBalance));
         System.out.println("Currency: " + defaultCurrency);
         return accName;
     }
@@ -90,9 +90,9 @@ public class BankView{
 
     public void displayWithdrawResult(String accName, double withdrawAmt){
         System.out.println();
-        System.out.print("***");
+        System.out.println("***");
         System.out.println("Account Name = " + accName);
-        System.out.println("Withdraw Amount = " + withdrawAmt);
+        System.out.println("Withdraw Amount = " + String.format("%.2f", withdrawAmt));
     }
 
     //---------------------------
@@ -110,12 +110,12 @@ public class BankView{
         System.out.println("Exchanged Currency");
 
         for(int i = 0; i< currencyTypes.length; i++){
-            System.out.println("[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ") = " + exchangedAmt[i]);
+            System.out.println("[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ") = " + String.format("%.2f", exchangedAmt[i]));
         }
         System.out.println();
         System.out.println("***");
         System.out.println("Source Currency = Philippine Peso (PHP)");
-        System.out.println("Source Amount (PHP) = " + sourceAmt);
+        System.out.println("Source Amount (PHP) = " + String.format("%.2f", sourceAmt));
     }
 
     //---------------------------
@@ -124,23 +124,23 @@ public class BankView{
 
     public int getSelectedForeignCurrency(String[] currencyTypes, String[] currencyCodes){
         System.out.println();
-        System.out.print("Record Exchange Rate");
+        System.out.println("Record Exchange Rate");
         System.out.println();
         for(int i = 0; i < currencyTypes.length; i++){
             System.out.println("[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ")");
         }
         System.out.println();
-        System.out.print("Selected Foreign Currency: ");
-       
-       while(!scanner.hasNextInt()){
-        System.out.println("Invalid input. Please enter a number.");
-        scanner.nextLine();
-        System.out.print("Selected Foreign Currency: ");
-       }
 
-        int selectedCurrency = scanner.nextInt();
-        scanner.nextLine();
-        return selectedCurrency;
+        while (true){
+            System.out.print("Selected Foreign Currency: ");
+            String input = scanner.nextLine();
+            if(input.matches("\\[[0-9]+\\]")){
+                int selectedCurrency = Integer.parseInt(input.substring(1, input.length()-1));
+                return selectedCurrency;
+            }
+            System.out.println("Invalid input. Please enter a number in brackets.");
+        }
+        
     }
 
     public double getExchangeRate(){
@@ -151,7 +151,7 @@ public class BankView{
         System.out.println();
         System.out.println("***");
         System.out.println("Select Foreign Currency = [" + selectedForeignCurrency + "]");
-        System.out.println("Exchange Rate = " + exchangeRate);
+        System.out.println("Exchange Rate = " + String.format("%.2f", exchangeRate));
     }
 
 
@@ -170,6 +170,12 @@ public class BankView{
         int choice = scanner.nextInt();
         scanner.nextLine();
         return choice;
+    }
+
+    public void displaySelectedChoice(int choice) {
+        System.out.println();
+        System.out.println("***");
+        System.out.println("Choice = " + choice);
     }
 
     private double getValidDouble(String prompt){
