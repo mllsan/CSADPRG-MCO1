@@ -29,6 +29,7 @@ public class BankController{
                 choice = view.getChoice();
                 model.setChoice(choice);
                 }
+                view.displaySelectedChoice(choice);
                 navigationMenu(choice);
             }
         }
