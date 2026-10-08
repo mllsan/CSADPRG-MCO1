@@ -232,53 +232,57 @@ void currencyConversion(Account RegisteredAcc, Currencies Currencies[]){
 
 int main(){
     int choice = 0;
+    char ch;
     Account RegisteredAcc = {"", 1000, "PHP"};
     Currencies Currencies[6];
     getCurrencyDetails(Currencies);
 
-    MainMenu(&choice);
+    
     int systemActive = 1;
     while (systemActive == 1){
+        MainMenu(&choice);
         if (choice == 1){
             printf("\n");
             registerAccount(&RegisteredAcc);
             printf("\n");
-            MainMenu(&choice);
+
         }
         else if (choice == 2){
             printf("\n");
             depositAmount(&RegisteredAcc);
             printf("\n");
-            MainMenu(&choice);
+
         }
         else if (choice == 3){
             printf("\n");
             withdrawAmount(&RegisteredAcc);
             printf("\n");
-            MainMenu(&choice);
+
         }
         else if (choice == 4){
             printf("\n");
-            displayExchangeRate(Currencies);
+            currencyConversion(RegisteredAcc, Currencies);
             printf("\n");
-            MainMenu(&choice);
         }
         else if (choice == 5){
             printf("\n");
-            currencyConversion(RegisteredAcc, Currencies);
+            displayExchangeRate(Currencies);
             printf("\n");
-            MainMenu(&choice);
         }
         else if (choice == 6){
             printf("\n");
             printf("To be implemented...");
             printf("\n");
-            MainMenu(&choice);
         }
-        else if (choice == 7){
-            printf("\n");
-            printf("Exiting the system...\n");
+        
+
+        printf("Back to the Main Menu (Y/N): ");
+        scanf(" %c", &ch);
+
+        if (ch == 'N'){
             systemActive = 0;
         }
+        printf("\n");
+        
     }
 }
