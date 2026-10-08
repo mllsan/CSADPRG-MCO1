@@ -75,7 +75,6 @@ void MainMenu(int *choice){
     printf("[4] Currency Exchange\n");
     printf("[5] Record Exchange Rates\n");
     printf("[6] Show Interest Amount\n");
-    printf("[7] Exit\n");
 
     printf("\n");
     printf("Choice: ");
@@ -86,12 +85,10 @@ void MainMenu(int *choice){
 }
 
 void registerAccount(Account *RegisteredAcc){
-    int c;
     printf("Register Account Name\n");
 
-    while ((c = getchar()) != '\n' && c != EOF);
     printf("Account Name: ");
-    scanf("%[^\n]s", RegisteredAcc->AccountName);
+    scanf(" %[^\n]", RegisteredAcc->AccountName);
 
     printf("\n***\n");
     printf("Account Name = %s\n", RegisteredAcc->AccountName);
@@ -100,18 +97,15 @@ void registerAccount(Account *RegisteredAcc){
 void depositAmount(Account *RegisteredAcc){
     float amount = 0.0;
     int approved = 0;
-    int c;
     char AccName[100];
 
     printf("Deposit Amount\n");
-    while ((c = getchar()) != '\n' && c != EOF);
     do{
         printf("Account Name: ");
-        scanf("%[^\n]s", AccName);
+        scanf(" %[^\n]", AccName);
 
         if(strcmp(AccName, RegisteredAcc->AccountName) != 0){
             printf("Error: Please enter a valid account\n\n");
-            while ((c = getchar()) != '\n' && c != EOF);
         }
     }while(strcmp(AccName, RegisteredAcc->AccountName) != 0);
 
@@ -138,18 +132,15 @@ void depositAmount(Account *RegisteredAcc){
 void withdrawAmount(Account *RegisteredAcc){
     float amount = 0.0;
     int approved = 0;
-    int c;
     char AccName[100];
 
     printf("Withdraw Amount\n");
-    while ((c = getchar()) != '\n' && c != EOF);
     do{
         printf("Account Name: ");
-        scanf("%[^\n]s", AccName);
+        scanf(" %[^\n]", AccName);
 
         if(strcmp(AccName, RegisteredAcc->AccountName) != 0){
             printf("Error: Please enter a valid account\n\n");
-            while ((c = getchar()) != '\n' && c != EOF);
         }
     }while(strcmp(AccName, RegisteredAcc->AccountName) != 0);
 
@@ -232,41 +223,38 @@ void currencyConversion(Account RegisteredAcc, Currencies Currencies[]){
 
 int main(){
     int choice = 0;
+    int systemActive = 1;
     char ch;
     Account RegisteredAcc = {"", 1000, "PHP"};
     Currencies Currencies[6];
     getCurrencyDetails(Currencies);
 
-    
-    int systemActive = 1;
     while (systemActive == 1){
         MainMenu(&choice);
+        int backToMenu = 1;
         if (choice == 1){
             printf("\n");
             registerAccount(&RegisteredAcc);
             printf("\n");
-
         }
         else if (choice == 2){
             printf("\n");
             depositAmount(&RegisteredAcc);
             printf("\n");
-
         }
         else if (choice == 3){
             printf("\n");
             withdrawAmount(&RegisteredAcc);
             printf("\n");
-
         }
         else if (choice == 4){
             printf("\n");
-            currencyConversion(RegisteredAcc, Currencies);
+            displayExchangeRate(Currencies);
             printf("\n");
         }
         else if (choice == 5){
             printf("\n");
-            displayExchangeRate(Currencies);
+            currencyConversion(RegisteredAcc, Currencies);
             printf("\n");
         }
         else if (choice == 6){
@@ -275,14 +263,22 @@ int main(){
             printf("\n");
         }
         
+        while(backToMenu==1){
+            printf("Back to the Main Menu (Y/N): ");
+            scanf(" %c", &ch);
 
-        printf("Back to the Main Menu (Y/N): ");
-        scanf(" %c", &ch);
-
-        if (ch == 'N'){
-            systemActive = 0;
+            if (ch == 'N'){
+                printf("Exiting the system...\n");
+                systemActive = 0;
+                backToMenu = 0;
+            }
+            else if (ch=='Y'){
+                backToMenu = 0;
+            }
+            else{
+                printf("Error: Please enter a valid input\n\n");
+            }
         }
         printf("\n");
-        
     }
 }
