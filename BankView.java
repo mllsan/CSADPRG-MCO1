@@ -4,6 +4,12 @@
 // Paradigm(s): Object Oriented Programming following MVC structure
 //********************
 
+/**
+ * Represents the View component of the MVC banking application.
+ * Handles user input, displays transaction menus and results, and 
+ * presents error messages for invalid inputs.
+ */
+
 import java.util.Scanner;
 
 public class BankView{
@@ -46,14 +52,11 @@ public class BankView{
     // DEPOSIT AMOUNT           -
     //---------------------------
     
-    public String getDepositAccName(double defaultBalance, String defaultCurrency){
+    public String getDepositAccName(){
         System.out.println();
         System.out.println("Deposit Amount");
         System.out.print("Account Name: ");   
-        String accName = scanner.nextLine();
-        System.out.println("Current Balance: " + defaultBalance);
-        System.out.println("Currency: " + defaultCurrency);
-        return accName;
+        return scanner.nextLine();
     }
 
     public double getDepositAmt(){
@@ -62,25 +65,23 @@ public class BankView{
     
     }
 
-    public void displayDepositResult(String accName, double depositAmt){
+    public void displayDepositResult(String accName, double depositAmt, double currentBalance){
         System.out.println();
         System.out.println("***");
         System.out.println("Account Name: " + accName);
         System.out.println("Deposit Amount = " + String.format("%.2f", depositAmt));
+        System.out.println("Updated Balance = " + String.format("%.2f", currentBalance));
     }
 
     //---------------------------
     // WITHDRAW AMOUNT          -
     //---------------------------
 
-    public String getWithdrawAccName(double defaultBalance, String defaultCurrency){
+    public String getWithdrawAccName(){
         System.out.println();
         System.out.println("Withdraw Amount");
         System.out.print("Account Name: ");
-        String accName = scanner.nextLine();
-        System.out.println("Current Balance: " + String.format("%.2f", defaultBalance));
-        System.out.println("Currency: " + defaultCurrency);
-        return accName;
+        return scanner.nextLine();
     }
 
     public double getWithdrawAmt(){
@@ -88,11 +89,12 @@ public class BankView{
         return getValidDouble("Withdraw Amount: ");
     }
 
-    public void displayWithdrawResult(String accName, double withdrawAmt){
+    public void displayWithdrawResult(String accName, double withdrawAmt, double currentBalance){
         System.out.println();
         System.out.println("***");
         System.out.println("Account Name = " + accName);
         System.out.println("Withdraw Amount = " + String.format("%.2f", withdrawAmt));
+        System.out.println("Updated Balance = " + String.format("%.2f", currentBalance));
     }
 
     //---------------------------
@@ -100,22 +102,61 @@ public class BankView{
     //---------------------------
 
     public double getSourceAmt(){
+        return getValidDouble("Source Amount: ");
+    }                
+
+    public int getCurrencyChoice(String[] currencyTypes, String[] currencyCodes){
         System.out.println();
         System.out.println("Foreign Currency Exchange");
-        return getValidDouble("Source Amount (PHP): ");
-    }
+        System.out.println("Source Currency Option:");
 
-    public void displayCurrencyExchange(double sourceAmt, String[] currencyTypes, String[] currencyCodes, double[] exchangedAmt){
-        System.out.println();
-        System.out.println("Exchanged Currency");
-
-        for(int i = 0; i< currencyTypes.length; i++){
-            System.out.println("[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ") = " + String.format("%.2f", exchangedAmt[i]));
+        for (int i = 0; i < currencyTypes.length; i++){
+            System.out.println( "[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ")");
         }
         System.out.println();
-        System.out.println("***");
-        System.out.println("Source Currency = Philippine Peso (PHP)");
-        System.out.println("Source Amount (PHP) = " + String.format("%.2f", sourceAmt));
+        System.out.print("Source Currency: ");
+        while(!scanner.hasNextInt()){
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.nextLine();
+            System.out.print("Source Currency: ");
+        }
+
+        int currencyNumber = scanner.nextInt();
+        scanner.nextLine();
+        return currencyNumber;
+    }
+
+    public int getExchangedCurrency(String[] currencyTypes, String[] currencyCodes){
+        System.out.println();
+        System.out.println("Exchanged Currency Options:");
+
+        for(int i = 0; i < currencyTypes.length; i++){
+            System.out.println("[" + (i + 1) + "] " + currencyTypes[i] + " (" + currencyCodes[i] + ")");
+        }
+
+        System.out.println();
+        System.out.print("Exchange Currency: ");
+
+        while(!scanner.hasNextInt()){
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.nextLine();
+            System.out.print("Exchange Currency: ");
+        }
+
+        int exchangedCurrency = scanner.nextInt();
+        scanner.nextLine();
+
+        return exchangedCurrency;
+    }
+
+    public void displayExchangedResult(double exchangedAmount){
+        System.out.println("Exchange Amount: " + String.format("%.2f", exchangedAmount));
+    }
+
+    public String getConvertAnotherCurrency(){
+        System.out.println();
+        System.out.print("Convert another currency (Y/N): ");
+        return scanner.nextLine();
     }
 
     //---------------------------
@@ -135,14 +176,21 @@ public class BankView{
             System.out.print("Selected Foreign Currency: ");
             String input = scanner.nextLine();
             if(input.matches("\\[[0-9]+\\]")){
-                int selectedCurrency = Integer.parseInt(input.substring(1, input.length()-1));
-                return selectedCurrency;
+                
+                try{
+                    int selectedCurrency = Integer.parseInt(input.substring(1, input.length() - 1));
+                    return selectedCurrency;
+                }
+                catch(NumberFormatException e){
+                    System.out.println("invalid input. Number is too large.");
+                }
             }
-            System.out.println("Invalid input. Please enter a number in brackets.");
-        }
+            else{
+                System.out.println("Invalid input. Please enter a number in brackets.");
+            }
         
+        }
     }
-
     public double getExchangeRate(){
         return getValidDouble("Exchange Rate: ");
     }
@@ -154,6 +202,46 @@ public class BankView{
         System.out.println("Exchange Rate = " + String.format("%.2f", exchangeRate));
     }
 
+
+    //---------------------------
+    // SHOW INTEREST AMOUNT     -
+    //---------------------------
+
+    public void displayInterestAmt(double currentBalance, String currency, double annualInterestRate){
+        System.out.println("Current Balance: " + String.format("%.2f", currentBalance));
+        System.out.println("Currency: " + currency);
+        System.out.println("Interest Rate: " + String.format("%.0f", annualInterestRate * 100) + "%");
+    }
+
+    public int getInterestDays(){
+        System.out.println();
+        System.out.print("Total Number of Days: ");
+        while(!scanner.hasNextInt()){
+            System.out.println("Invalid input. Please enter a whole number.");
+            scanner.nextLine();
+            System.out.println("Total Number of Days: ");
+        }
+        int days = scanner.nextInt();
+        scanner.nextLine();
+        return days;
+    }
+
+    public void showInterestTable(int days, double [] interests, double[] balances){
+        System.out.println();
+        System.out.println("Day | Interest | Balance |");
+
+        for (int i = 0; i < days; i++) {
+
+            System.out.println((i + 1) + "   | " + String.format("%.2f", interests[i]) + "     | " + String.format("%.2f", balances[i]) + " |");
+        }
+    }
+
+    public String getInterestAccName(){
+        System.out.println();
+        System.out.println("Show Interest Amount");
+        System.out.print("Account Name: ");
+        return scanner.nextLine();
+    }
 
     //---------------------------
     // CHOICE & ERROR HANDLING  -
@@ -201,7 +289,7 @@ public class BankView{
     }
 
     public void displayInvalidAmount(){
-        System.out.println("Invalid amount. Amount must be greater than 0.");
+        System.out.println("Invalid amount. Please enter a valid positive number.");
     }
 
     public void displayInvalidCurrencyChoice(){
@@ -210,11 +298,55 @@ public class BankView{
     }
 
     public void displayInvalidWithdraw(){
-        System.out.println("Invalid withdrawal amount. Please recheck your balance.");
+        System.out.println("No available balance. Withdrawal cannot proceed.");
     }
 
     public void displayInsufficientBalance(){
         System.out.println("Invalid withdrawal amount. Amount exceeds your current balance.");
     }
 
+    public void displayInvalidDays(){
+        System.out.println("Invalid number of days. Please enter a positive whole number");
+    }
+
+    public String getReturnToMenu(){
+        System.out.println();
+        System.out.print("Back to the Main Menu (Y/N): ");
+        return scanner.nextLine();
+    }
+
+    public void displayInvalidReturnMenuChoice(){
+        System.out.println("Invalid input. Please enter 'Y' or 'N' only.");
+    }
+
+    public void displayInvalidAccName(){
+        System.out.println("Invalid account name. Please follow the format 'lastname, firstname' with letters only.");
+    }
+
+    public void displayDuplicateAccount(){
+        System.out.println("Account already registered. Please enter a different name.");
+    }
+
+    public void displayAccountNotFound(){
+        System.out.println("Account not found. Please input a registered account.");
+    }
+
+    //---------------------------
+    // ACCOUNT BALANCE DISPLAY  -
+    //---------------------------
+    
+    public void displayAccountBalance(double currentBalance, String currency){
+        System.out.println("Current Balance: " + String.format("%.2f", currentBalance));
+        System.out.println("Currency: " + currency);
+    }
+
+    
+    //---------------------------
+    // TERMINATE MESSAGE        -
+    //---------------------------
+    
+    public void displayExiting(){
+        System.out.println();
+        System.out.println("Exiting...");
+    }
 }
