@@ -306,7 +306,7 @@ public class BankView{
     }
 
     public void displayInvalidDays(){
-        System.out.println("Invalid number of days. Please enter a positive whole number");
+        System.out.println("Invalid number of days. Please enter a number between 1 and 365.");
     }
 
     public String getReturnToMenu(){
