@@ -164,13 +164,14 @@ void MainMenu(int *choice){
 void registerAccount(Account RegisteredAcc[], int *activeAccs){
     char Name[100];
     int c;
-    int valid = 0;
+    int valid = 0, sameName = 0;
 
     printf("Register Account Name\n");
 
-    printf("Format: Last Name, First Name\n");
+    printf("Format: Last Name, First Name\n\n");
     while ((c = getchar()) != '\n' && c != EOF);
-    while(valid==0){
+    while(valid==0 || sameName==1){
+        sameName = 0;
         printf("Account Name: ");
         if (fgets(Name, sizeof(Name), stdin) != NULL) {
                 if (getValidName(Name)) {
@@ -181,6 +182,12 @@ void registerAccount(Account RegisteredAcc[], int *activeAccs){
                     printf("Error: Invalid format\n\n");
                 }
             }
+        for(int i=0; i<*activeAccs; i++){
+            if(strcmp(RegisteredAcc[i].AccountName, Name)==0){
+                sameName = 1;
+                printf("Error: Account Name Already Taken\n\n");
+            }
+        }
     }
 
     (*activeAccs)++;
@@ -406,8 +413,8 @@ void showInterestAmount(Account RegisteredAcc[], int activeAccs){
     while(approved==0){
         printf("Total Number of Days: ");
         scanf("%d", &numberDays);
-        if(numberDays<=0)
-            printf("Error: Please enter a valid number\n");
+        if(numberDays<=0 || numberDays>365)
+            printf("Error: Please enter a valid number\n\n");
         else
             approved = 1;
     }
