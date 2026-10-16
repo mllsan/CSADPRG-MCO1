@@ -233,7 +233,7 @@ public class BankModel{
     }
 
     public boolean isValidInterestDays(int days){
-        return days > 0;
+        return days >= 1 && days <= 365 ;
     }
 
     //-----------------------
