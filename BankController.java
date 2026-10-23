@@ -165,7 +165,7 @@ public class BankController{
             model.setAccName(accountName.trim());
             view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
             
-            if(model.isValidAmount(model.getCurrentBalance())){
+            if(!model.isValidAmount(model.getCurrentBalance())){
                 view.displayInvalidWithdraw();
             } else {
                 double withdrawAmount = view.getWithdrawAmt();
