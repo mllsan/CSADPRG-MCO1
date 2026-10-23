@@ -165,7 +165,7 @@ public class BankController{
             model.setAccName(accountName.trim());
             view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
             
-            if(model.getCurrentBalance() <= 0){
+            if(model.isValidAmount(model.getCurrentBalance())){
                 view.displayInvalidWithdraw();
             } else {
                 double withdrawAmount = view.getWithdrawAmt();
@@ -238,7 +238,6 @@ public class BankController{
 
             if(input.equals("N")){
                 exchanging = false;
-                // isRunning = false; assuming we wanna go back to the main menu 
             }
         } 
     }
@@ -294,23 +293,17 @@ public class BankController{
 
             model.setAccName(accountName);
 
-            // Display account information
             view.displayInterestAmt(model.getCurrentBalance(), model.getDefaultCurrency(), model.getAnnualInterestRate());
-
-            // Ask for the number of days
             int days = view.getInterestDays();
 
-            // Validate days
             while (!model.isValidInterestDays(days)) {
                 view.displayInvalidDays();
                 days = view.getInterestDays();
             }
 
-            // Calculate interest
             double[] interests = model.calculateInterestAmt(days);
             double[] balances = model.calculateInterestBal(days);
 
-            // Display interest table
             view.showInterestTable(days, interests, balances);
         }
 
