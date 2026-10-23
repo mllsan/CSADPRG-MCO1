@@ -11,6 +11,10 @@
 #include <ctype.h>
 
 /* definitions */
+
+/**
+* Stores the user's account information
+*/
 typedef struct AccountDetails {
     char AccountName[100];
     float Balance;
@@ -18,6 +22,9 @@ typedef struct AccountDetails {
     int InterestRate;
 } Account;
 
+/**
+* Stores the six different types of currency
+*/
 typedef struct CurrencyDetails {
     char Name[100];
     char Code[4];
@@ -25,6 +32,11 @@ typedef struct CurrencyDetails {
 } Currencies;
 
 /* helper functions */
+
+/**
+ * This function labels and initializes the different currencies available
+ * @param Currencies is the array that stores information about the currencies
+ **/
 void getCurrencyDetails (Currencies Currencies[]){
     strcpy(Currencies[0].Name, "Philippine Peso");
     strcpy(Currencies[0].Code, "PHP");
@@ -51,6 +63,11 @@ void getCurrencyDetails (Currencies Currencies[]){
     Currencies[5].Rate = 9.00;
 }
 
+/**
+ * This function asks for user input that is within the accepted range
+ * @param min is the minimum value the user can input
+ * @param max is the maximum value the user can input
+**/
 int getValidInput(int min, int max) {
     int num;
 
@@ -70,6 +87,10 @@ int getValidInput(int min, int max) {
     }
 }
 
+/**
+ * This function checks whether the string follows the correct name format or not
+ * @param str is the string that will be examined
+**/
 int getValidName(char *str) {
     int Comma = 0, beforeComma = 0, afterComma = 0, valid = 1;
 
@@ -117,6 +138,11 @@ int getValidName(char *str) {
 }
 
 /* function implementations */
+
+/**
+ * This function displays the main menu interface and gets the player's choice 
+ * @param choice is the user's inputted choice from the menu
+**/
 void MainMenu(int *choice){
     printf("\nSelect Transaction: \n");
     printf("[1] Register Account Name\n");
@@ -134,6 +160,11 @@ void MainMenu(int *choice){
     printf("Choice = %d\n", *choice);
 }
 
+/**
+ * This function registers a new account and asks the user to input an account name with a specific format 
+ * @param RegisteredAcc is an array that stores information of all the accounts in the system
+ * @param activeAccs is the number of accounts currently registered in the system
+**/
 void registerAccount(Account RegisteredAcc[], int *activeAccs){
     char Name[100];
     int c;
@@ -167,6 +198,11 @@ void registerAccount(Account RegisteredAcc[], int *activeAccs){
     printf("Account Name = %s\n", Name);
 }
 
+/**
+ * This function updates the balance in the user's account by adding the inputted deposit amount
+ * @param RegisteredAcc is an array that stores information of all the accounts in the system
+ * @param activeAccs is the number of accounts currently registered in the system
+**/
 void depositAmount(Account RegisteredAcc[], int activeAccs){
     float amount = 0.0;
     int approved = 0, index = 0, validAcc = 0;
@@ -211,6 +247,11 @@ void depositAmount(Account RegisteredAcc[], int activeAccs){
     printf("Deposit Amount = %.2f\n", amount);
 }
 
+/**
+ * This function updates the balance in the user's account by subtracting the inputted wtihdraw amount
+ * @param RegisteredAcc is an array that stores information of all the accounts in the system
+ * @param activeAccs is the number of accounts currently registered in the system
+**/
 void withdrawAmount(Account RegisteredAcc[], int activeAccs){
     float amount = 0.0;
     int approved = 0, index = 0, validAcc = 0;
@@ -254,6 +295,10 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs){
     printf("Withdraw Balance = %.2f\n", amount);
 }
 
+/**
+ * This function lets the user record a new exchange rate for the selected currency they choose
+ * @param Currencies is the array that stores information about the currencies
+**/
 void displayExchangeRate(Currencies Currencies[]){
     int approved = 0, validChoice = 0, currencyChoice = 0;
     float rate = 0.0;
@@ -291,6 +336,10 @@ void displayExchangeRate(Currencies Currencies[]){
     printf("Exchange Rate = %.2f\n", rate);
 }
 
+/**
+ * This function allows the user to convert an amount of money from one currency to another
+ * @param Currencies is the array that stores information about the currencies
+**/
 void currencyConversion(Currencies Currencies[]){
     double convert = 0.0, sourceAmt = 0.0;
     int approved = 0, sourceChoice = 0, exchangeChoice = 0, convertAgain = 1, error = 1;
@@ -346,6 +395,12 @@ void currencyConversion(Currencies Currencies[]){
     }
 }
 
+/**
+ * This function computes the interest rate based on the balance and amount of days inputted by the user,
+ * then updates and displays the balance per day with the daily interest
+ * @param RegisteredAcc is an array that stores information of all the accounts in the system
+ * @param activeAccs is the number of accounts currently registered in the system
+**/
 void showInterestAmount(Account RegisteredAcc[], int activeAccs){
     int approved = 0, numberDays = 0, index = 0, validAcc = 0;;
     float interest = 0.0;
