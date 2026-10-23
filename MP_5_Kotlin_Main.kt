@@ -1,9 +1,8 @@
-/**
- * This is the Main file for the Kotlin version of MCO1 for Group 5.
- *
- * @author Hannah Cheng
- * @version 2.1
- */
+// ********************
+// Last names: Cheng
+// Language: Kotlin
+// Paradigm(s): procedural (imperative), some OOP
+// ********************
 
 package mco1
 
