@@ -1,3 +1,8 @@
+#This is the version 1.0 of R file of MCO1 for Group 5.
+#@author Iris Salvador
+#@version 1.0
+
+
 #prints the Main Menu Prompt
 mainmenu <- function(){
 	cat("\nSelect Transaction:\n[1] Register Account Name\n[2] Deposit Amount\n[3] Withdraw Amount\n[4] Currency Exchange\n[5] Record Exchange Rates\n[6] Show Interest Amount\n\n")
