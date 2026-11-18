@@ -13,11 +13,13 @@ public class Account{
 
     // ATTRIBUTES
     private String accName;
+    private String accNumber;
     private double currentBalance;
 
     // CONSTRUCTOR
-    public Account(String accName, double currentBalance){
+    public Account(String accName, String accNumber, double currentBalance){
         this.accName = accName;
+        this.accNumber = accNumber;
         this.currentBalance = currentBalance;
     }
 
@@ -30,9 +32,14 @@ public class Account{
         return accName;
     }
 
+    public String getAccNumber(){
+        return accNumber;
+    }
+    
     public double getCurrentBalance(){
         return currentBalance;
     }
+
 
         
     //----------------
