@@ -9,7 +9,8 @@
  * Manages program navigation, processes user transactions, and
  * coordinates interactions between BankModel and BankView
  */
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class BankController{
 
@@ -28,6 +29,11 @@ public class BankController{
      * transaction methods until user decides to exit the program.
      */
     public void run(){
+
+        try{
+            model.loadTransactionData();
+            // view.displayCSVSummary(model.getTotalRows(), model.getValidRows(), model.getInvalidRows(), model.getExcludedRows());
+        
     
         while(isRunning){
             view.displayMainMenu();
@@ -56,10 +62,12 @@ public class BankController{
                 }
             
             }
-
+            
             view.displayExiting();
+            } catch(IOException e){
+            view.displayCSVError();
         }
-    
+    }
     
     /**
      * Directs the program to appropriate banking transaction based on user choice.
@@ -85,6 +93,9 @@ public class BankController{
             case 6:
                 showInterestAmount();
                 break;
+            case 7:
+                generateReports();
+                break;
         }
     }
 
@@ -98,21 +109,52 @@ public class BankController{
      * before saving the new account through Model.
      */
     private void registerAccount(){
-        String accountName = view.getAccName();
+        
+        boolean registering = true;
 
-        while(!model.isValidAccountName(accountName) || model.isAccRegistered(accountName)){
-            
-            if(!model.isValidAccountName(accountName)){
-                view.displayInvalidAccName();
-            } else {
-                view.displayDuplicateAccount();
+        while(registering){
+        
+            String accountName = view.getAccName();
+
+            while(!model.isValidAccountName(accountName) || model.isAccRegistered(accountName)){
+                
+                if(!model.isValidAccountName(accountName)){
+                    view.displayInvalidAccName();
+                } else {
+                    view.displayDuplicateAccount();
+                }
+
+                accountName = view.getAccName();
             }
+            double initialDeposit = view.getInitialDeposit();
 
-            accountName = view.getAccName();
+            while(!model.isValidInitialDeposit(initialDeposit)){
+                view.displayInvalidInitialDeposit();
+                initialDeposit = view.getInitialDeposit();
+            }
+            try{
+                boolean registered = model.registerAccount(accountName, initialDeposit);
+                if(registered){
+                    model.setAccName(accountName.trim());
+
+                    Account account = model.findAccount(accountName);
+                    view.displayRegisAcc(account.getAccName(), account.getAccNumber(), account.getCurrentBalance());
+                } else {
+                    view.displayInvalidAccName();
+                }
+            } catch(IOException e){
+                view.displayCSVSaveError();
+            }
+            
+            String choice = view.getAnotherRegister();
+            while(!model.isValidReturnMenuChoice(choice)){
+                view.displayInvalidReturnMenuChoice();
+                choice = view.getAnotherRegister();
+            }
+            if(choice.equals("N")){
+                registering = false;
+            }
         }
-        model.registerAccount(accountName);
-        model.setAccName(accountName.trim());
-        view.displayRegisAcc(model.getAccName());
     }
 
     
@@ -126,25 +168,41 @@ public class BankController{
      * and display transaction result.
      */
     private void depositAmount(){
-        String accountName = view.getDepositAccName();
-       
-        if(!model.isAccRegistered(accountName)){
-            view.displayAccountNotFound();
-        } else {
-            model.setAccName(accountName.trim());
-            view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
-            double depositAmt = view.getDepositAmt();
 
-            while(!model.isValidAmount(depositAmt)){
-            view.displayInvalidAmount();
-            depositAmt = view.getDepositAmt();
+        boolean depositing = true;
+        
+        while(depositing){
+            String accountName = view.getDepositAccName();
+        
+            if(!model.isAccRegistered(accountName)){
+                view.displayAccountNotFound();
+            } else {
+                model.setAccName(accountName.trim());
+                view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
+                double depositAmt = view.getDepositAmt();
 
+                while(!model.isValidAmount(depositAmt)){
+                view.displayInvalidAmount();
+                depositAmt = view.getDepositAmt();
+
+                }
+                try {
+                    model.setDepositAmt(depositAmt);
+                    view.displayDepositResult(model.getAccName(), model.getDepositAmt(), model.getCurrentBalance());
+                } catch(IOException e){
+                    view.displayCSVSaveError();
+                }
+                String choice = view.getAnotherDeposit();
+
+                while(!model.isValidReturnMenuChoice(choice)){
+                    view.displayInvalidReturnMenuChoice();
+                    choice = view.getAnotherDeposit();
+                }
+                if(choice.equals("N")){
+                    depositing = false;
+                }
             }
-            model.setDepositAmt(depositAmt);
-            view.displayDepositResult(model.getAccName(), model.getDepositAmt(), model.getCurrentBalance());
-
         }
-       
     }
     
     //---------------------------
@@ -157,37 +215,53 @@ public class BankController{
      * withdrawal amount before updating balance.
      */
     private void withdrawAmount(){
-        String accountName = view.getWithdrawAccName();
         
-        if(!model.isAccRegistered(accountName)){
-            view.displayAccountNotFound();
-        } else {
-            model.setAccName(accountName.trim());
-            view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
+        boolean withdrawing = true;
+
+        while(withdrawing){
+        
+            String accountName = view.getWithdrawAccName();
             
-            if(!model.isValidAmount(model.getCurrentBalance())){
-                view.displayInvalidWithdraw();
+            if(!model.isAccRegistered(accountName)){
+                view.displayAccountNotFound();
             } else {
-                double withdrawAmount = view.getWithdrawAmt();
+                model.setAccName(accountName.trim());
+                view.displayAccountBalance(model.getCurrentBalance(), model.getDefaultCurrency());
+                
+                if(!model.isValidAmount(model.getCurrentBalance())){
+                    view.displayInvalidWithdraw();
+                } else {
+                    double withdrawAmount = view.getWithdrawAmt();
 
-                while(!model.isValidWithdraw(withdrawAmount)){
-            
-                    if(!model.isValidAmount(withdrawAmount)){
-                        view.displayInvalidAmount();
-                    } else {
-                        view.displayInsufficientBalance();
+                    while(!model.isValidWithdraw(withdrawAmount)){
+                
+                        if(!model.isValidAmount(withdrawAmount)){
+                            view.displayInvalidAmount();
+                        } else {
+                            view.displayInsufficientBalance();
+                        }
+                
+                        withdrawAmount = view.getWithdrawAmt();
                     }
-            
-                    withdrawAmount = view.getWithdrawAmt();
+
+                    try {
+                        model.setWithdrawAmt(withdrawAmount); 
+                        view.displayWithdrawResult(model.getAccName(), model.getWithdrawAmt(), model.getCurrentBalance());
+                    } catch(IOException e){
+                        view.displayCSVSaveError();
+                    } 
+                    String choice = view.getAnotherWithdraw();
+
+                    while(!model.isValidReturnMenuChoice(choice)){
+                        view.displayInvalidReturnMenuChoice();
+                        choice = view.getAnotherWithdraw();
+                    }
+                    if(choice.equals("N")){
+                        withdrawing = false;
+                    }
                 }
-
-                model.setWithdrawAmt(withdrawAmount);
-                view.displayWithdrawResult(model.getAccName(), model.getWithdrawAmt(), model.getCurrentBalance());
-
             }
-            
         }
-        
     }
 
     
@@ -307,5 +381,54 @@ public class BankController{
             view.showInterestTable(days, interests, balances);
         }
 
+    }
+
+    //---------------------------
+    // GENERATE REPORTS         -
+    //---------------------------
+
+    private void generateReports(){
+        boolean generating = true;
+        boolean fileLoaded = false;
+
+        while(generating){
+            view.displayReportsMenu();
+            int choice = view.getChoice();
+
+            while(choice < 1 || choice > 2){
+                view.displayInvalidChoice();
+                choice = view.getChoice();
+            }
+            try{
+                if(choice == 1){
+                    model.loadTransactionData();
+                    fileLoaded = true;
+                    view.displayCSVSummary(model.getTotalRows(), model.getValidRows(), model.getInvalidRows(), model.getExcludedRows());
+                } else {
+                    if(!fileLoaded){
+                        model.loadTransactionData();
+                        fileLoaded = true;
+                    }
+                    view.displayGeneratingReport();
+
+                    ArrayList<String[]> report1 = model.generateReport1();
+                    ArrayList<String[]> report2 = model.generateReport2();
+                    ArrayList<String[]> report3 = model.generateReport3();
+                    ArrayList<String[]> report4 = model.generateReport4();
+
+                    view.displayReportsSaved();
+
+                    view.displayReport1(report1);
+                    view.displayReport2(report2);
+                    view.displayReport3(report3);
+                    view.displayReport4(report4);
+
+                    generating = false;
+                }
+            } catch(IOException e){
+                view.displayCSVError();
+                generating = false;
+            }
+        }
     }
 }
