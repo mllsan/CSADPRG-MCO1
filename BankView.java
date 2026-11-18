@@ -11,6 +11,7 @@
  */
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class BankView{
 
@@ -22,13 +23,21 @@ public class BankView{
     public void displayMainMenu(){
         System.out.println();
         System.out.println("Select Transaction: ");
-        System.out.println("[1] Register Account Name");
+        System.out.println("[1] Register Account");
         System.out.println("[2] Deposit Amount");
         System.out.println("[3] Withdraw Amount");
         System.out.println("[4] Currency Exchange");
         System.out.println("[5] Record Exchange Rates");
         System.out.println("[6] Show Interest Amount");
+        System.out.println("[7] Generate Reports");
         System.out.println();
+    }
+
+    public void displayReportsMenu(){
+        System.out.println();
+        System.out.println("Generate Reports");
+        System.out.println("[1] Load the file");
+        System.out.println("[2] Generate Reports");
     }
 
 
@@ -42,11 +51,23 @@ public class BankView{
         System.out.print("Account name: ");
         return scanner.nextLine();
     }
-    public void displayRegisAcc(String accName){
+    public void displayRegisAcc(String accName, String accNumber, double initialDeposit){
         System.out.println();
-        System.out.println("***");
+        System.out.println("Account created successfully!");
         System.out.println("Account Name = " + accName);
+        System.out.println("Account Number =  " + accNumber);
+        System.out.println("Initial Deposit = " + String.format("%.2f", initialDeposit));
     }
+
+    public double getInitialDeposit(){
+        return getValidDouble("Initial Deposit: ");
+    }
+
+    public String getAnotherRegister(){
+        System.out.print("Register another account? (Y/N): ");
+        return scanner.nextLine();
+    }
+
 
     //---------------------------
     // DEPOSIT AMOUNT           -
@@ -73,6 +94,11 @@ public class BankView{
         System.out.println("Updated Balance = " + String.format("%.2f", currentBalance));
     }
 
+    public String getAnotherDeposit(){
+        System.out.print("Deposit another amount? (Y/N): ");
+        return scanner.nextLine();
+    }
+
     //---------------------------
     // WITHDRAW AMOUNT          -
     //---------------------------
@@ -95,6 +121,11 @@ public class BankView{
         System.out.println("Account Name = " + accName);
         System.out.println("Withdraw Amount = " + String.format("%.2f", withdrawAmt));
         System.out.println("Updated Balance = " + String.format("%.2f", currentBalance));
+    }
+
+    public String getAnotherWithdraw(){
+        System.out.print("Withdraw another amount? (Y/N): ");
+        return scanner.nextLine();
     }
 
     //---------------------------
@@ -331,6 +362,10 @@ public class BankView{
         System.out.println("Account not found. Please input a registered account.");
     }
 
+    public void displayInvalidInitialDeposit(){
+        System.out.println("Invalid initial deposit. Minimum amount is Php 5000.00");
+    }
+
     //---------------------------
     // ACCOUNT BALANCE DISPLAY  -
     //---------------------------
@@ -348,5 +383,86 @@ public class BankView{
     public void displayExiting(){
         System.out.println();
         System.out.println("Exiting...");
+    }
+
+    //---------------------------
+    // CSV FILE HANDLING        -
+    //---------------------------
+
+    public void displayCSVError(){
+        System.out.println("Error loading bank_transactions.csv file.");
+        System.out.println("Please ensure that the file exists and is accessible.");
+    }
+
+    public void displayCSVSaveError(){
+        System.out.println("Unable to save the transaction to the CSV file.");
+    }
+
+    public void displayCSVSummary(int totalRows, int validRows, int invalidRows, int excludedRows){
+
+        System.out.println();
+        System.out.println("Processing dataset... (" + totalRows + " rows loaded, " + validRows + " filetered for PHP currency)");
+        System.out.println();
+    }
+
+    //---------------------------
+    // REPORTS                  -
+    //---------------------------
+
+    public void displayGeneratingReport(){
+        System.out.println();
+        System.out.println("Generating reports...");
+    }
+
+    public void displayReport1(ArrayList<String[]> reportRecords){
+        System.out.println();
+        System.out.println("Report 1: Banking Privilege Tiers");
+        System.out.println("AccountName | AccountAge | CurrentBalance | AverageDailyBalance | PrivilegeTier");
+
+        for(int i = 0; i < reportRecords.size() && i < 2; i++){
+            System.out.println(String.join(" | ", reportRecords.get(i)));
+        }
+        System.out.println();
+        System.out.println("(Full table exported to report1_banking_privilege_tiers.csv)");
+    }
+
+    public void displayReport2(ArrayList<String[]> reportRecords){
+        System.out.println();
+        System.out.println("Report 2: Interest Expense Projection");
+        System.out.println("AccountName | CurrentBalance | ExpectedInterest");
+
+        for(int i = 0; i < reportRecords.size() && i < 2; i++){
+            System.out.println(String.join(" | ", reportRecords.get(i)));
+        }
+        System.out.println();
+        System.out.println("(Full table exported to report2_interest_expense_projection.csv)");
+    }
+
+    public void displayReport3(ArrayList<String[]> reportRecords){
+        System.out.println();
+        System.out.println("Report 3: Suspicious Client Behavior");
+        System.out.println("AccountName | Date | TotalWithdrawalAmounts | NumberOfDeposits | TotalDepositAmounts | TurnoverVelocity (%) | RiskFlagLevel");
+        
+        for(int i = 0; i < reportRecords.size() && i < 2; i++){
+            System.out.println(String.join(" | ", reportRecords.get(i)));
+        }
+        System.out.println();
+        System.out.println("(Full table exported to report3_suspicious_client_behavior.csv)");
+    }
+
+    public void displayReport4(ArrayList<String[]> reportRecords){
+        System.out.println();
+        System.out.println("Report 4: Most Active Bank Accounts");
+        System.out.println("AccountName | AccountNumber | NumberOfDeposits | NumberOfWithdrawals | TotalTransactions");
+
+        for(int i = 0; i < reportRecords.size() && i < 2; i++){
+            System.out.println(String.join(" | ", reportRecords.get(i)));
+        }
+        System.out.println();
+        System.out.println("(Full table exported to report4_most_active_accounts.csv)");
+    }
+    public void displayReportsSaved(){
+        System.out.println();
+        System.out.println("Outputs saved to individual files...");
     }
 }
