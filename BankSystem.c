@@ -416,8 +416,7 @@ void depositAmount(Account RegisteredAcc[], int activeAccs) {
             printf("Deposit Amount: ");
 
             if (scanf("%f", &amount) != 1) {
-                while ((c = getchar()) != '\n' && c != EOF) {
-                }
+                while ((c = getchar()) != '\n' && c != EOF) {}
                 printf("Invalid input. Please enter a number\n");
             } 
             else if (amount <= 0) {
@@ -495,8 +494,7 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
                     printf("Withdraw Amount: ");
 
                     if (scanf("%f", &amount) != 1) {
-                        while ((c = getchar()) != '\n' && c != EOF) {
-                        }
+                        while ((c = getchar()) != '\n' && c != EOF) {}
                         printf("Error: Invalid input. Please enter a number\n");
                     } 
                     else if (amount <= 0) {
@@ -551,21 +549,21 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
  * @param Currencies is the array that stores information about the currencies
 **/
 void displayExchangeRate(Currencies Currencies[]) {
-    int approved = 0, validChoice = 0, currencyChoice = 0;
+    int approved = 0, validChoice = 0, currencyChoice = 0, c = 0;
     float rate = 0.0;
 
     printf("Record Exchange Rate\n\n");
     for (int i = 1; i <= 6; i++) {
         printf("[%d] %s (%s)\n", i, Currencies[i - 1].Name, Currencies[i - 1].Code);
     }
-    validChoice = 0;
     while (validChoice == 0) {
         printf("\n");
         printf("Select Foreign Currency: ");
+
         if (scanf(" [%d]", &currencyChoice) == 1 && currencyChoice >= 1 && currencyChoice <= 6) {
             validChoice = 1;
         }
-        while (getchar() != '\n');
+        while ((c = getchar()) != '\n' && c != EOF) {}
         if (validChoice == 0) {
             printf("Error: Invalid input. Please enter a number in brackets.\n");
         }
@@ -573,11 +571,17 @@ void displayExchangeRate(Currencies Currencies[]) {
 
     while (approved == 0) {
         printf("Exchange Rate: ");
-        scanf("%f", &rate);
-        if (rate <= 0)
+        if (scanf("%f", &rate) != 1) {
+            while ((c = getchar()) != '\n' && c != EOF){}
+            printf("Error: Invalid input. Please enter a number.\n\n");
+        } 
+        else if (rate <= 0) {
             printf("Error: Invalid amount. Please enter a valid positive number.\n\n");
-        else
+        } 
+        else {
+            while ((c = getchar()) != '\n' && c != EOF){}
             approved = 1;
+        }
     }
 
     Currencies[currencyChoice - 1].Rate = rate;
@@ -593,12 +597,13 @@ void displayExchangeRate(Currencies Currencies[]) {
 **/
 void currencyConversion(Currencies Currencies[]) {
     double convert = 0.0, sourceAmt = 0.0;
-    int approved = 0, sourceChoice = 0, exchangeChoice = 0, convertAgain = 1, error = 1;
+    int approved = 0, sourceChoice = 0, exchangeChoice = 0, convertAgain = 1, error = 1, c = 0;
     char ch;
 
     while (convertAgain == 1) {
         printf("Foreign Currency Exchange\n");
         printf("Source Currency Option:\n");
+
         for (int i = 1; i <= 6; i++) {
             printf("[%d] %s (%s)\n", i, Currencies[i - 1].Name, Currencies[i - 1].Code);
         }
@@ -607,17 +612,26 @@ void currencyConversion(Currencies Currencies[]) {
         printf("Source Currency: ");
         sourceChoice = getValidInput(1, 6);
         approved = 0;
+
         while (approved == 0) {
             printf("Source Amount: ");
-            scanf("%lf", &sourceAmt);
-            if (sourceAmt <= 0)
+
+            if (scanf("%lf", &sourceAmt) != 1) {
+                while ((c = getchar()) != '\n' && c != EOF){}
+                printf("Error: Invalid input. Please enter a number.\n");
+            } 
+            else if (sourceAmt <= 0) {
                 printf("Error: Invalid amount. Please enter a valid positive number.\n");
-            else
+            } 
+            else {
+                while ((c = getchar()) != '\n' && c != EOF){}
                 approved = 1;
+            }
         }
 
         printf("\n");
         printf("Exchanged Currency Options:\n");
+
         for (int i = 1; i <= 6; i++) {
             printf("[%d] %s (%s)\n", i, Currencies[i - 1].Name, Currencies[i - 1].Code);
         }
@@ -627,8 +641,8 @@ void currencyConversion(Currencies Currencies[]) {
         exchangeChoice = getValidInput(1, 6);
         convert = sourceAmt * Currencies[sourceChoice - 1].Rate / Currencies[exchangeChoice - 1].Rate;
         printf("Exchange Amount: %.2f\n\n", convert);
-
         error = 1;
+
         while (error == 1) {
             printf("Convert another currency (Y/N)? ");
             scanf(" %c", &ch);
@@ -655,7 +669,7 @@ void currencyConversion(Currencies Currencies[]) {
  * @param activeAccs is the number of accounts currently registered in the system
 **/
 void showInterestAmount(Account RegisteredAcc[], int activeAccs) {
-    int approved = 0, numberDays = 0, index = 0, validAcc = 0;
+    int approved = 0, numberDays = 0, index = 0, validAcc = 0, c = 0;
     float interest = 0.0;
     char AccName[100];
     double roundedInterest;
@@ -678,11 +692,17 @@ void showInterestAmount(Account RegisteredAcc[], int activeAccs) {
 
             while (approved == 0) {
                 printf("Total Number of Days: ");
-                scanf("%d", &numberDays);
-                if (numberDays <= 0 || numberDays > 365)
+                if (scanf("%d", &numberDays) != 1) {
+                    while ((c = getchar()) != '\n' && c != EOF){}
+                    printf("Error: Invalid input. Please enter a number.\n\n");
+                } 
+                else if (numberDays <= 0 || numberDays > 365) {
                     printf("Error: Invalid Input. Please enter a number between 1 and 365\n\n");
-                else
+                } 
+                else {
+                    while ((c = getchar()) != '\n' && c != EOF){}
                     approved = 1;
+                }
             }
 
             interest = RegisteredAcc[index].Balance * ((RegisteredAcc[index].InterestRate / 100.0) / 365);
