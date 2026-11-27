@@ -904,7 +904,95 @@ public class BankModel{
         }
         return reportRecords;
     }
+
+
+    /**
+     * Generates summary statistics from banking dataset
+     *
+     * @param report2 interest expense projection records
+     * @return json summary
+     * @throws IOException if file cannot be accessed
+     */
+
+    public String generateSummary(ArrayList<String[]> report2) throws IOException{
+
+        int totalAccs = accounts.size();
+        int totalDeposits = 0;
+        int totalWithdrawals = 0;
+
+        double totalBalance = 0;
+        double totalInterestExpenses = 0;
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("H:mm:ss");
+
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE))){
+
+            reader.readLine();
+
+            String line;
+
+            while((line = reader.readLine()) != null){
+
+                String[] data = line.split(",", -1);
+
+                if(data.length == 8 && data[4].trim().equalsIgnoreCase("PHP")){
+
+                    try{
+                        LocalDate.parse(data[2].trim(), dateFormat);
+                        LocalTime.parse(data[3].trim(), timeFormat);
+
+                        double amount = Double.parseDouble(data[5].trim());
+                        double balance = Double.parseDouble(data[7].trim());
+
+                        if(data[1].trim().matches("[0-9]{10}") &&
+                        !data[0].trim().isEmpty() &&
+                        Double.isFinite(amount) && amount > 0 &&
+                        Double.isFinite(balance) && balance >= 0){
+
+                            if(data[6].trim().equals("deposit")){
+                                totalDeposits++;
+                            }
+                            else if(data[6].trim().equals("withdrawal")){
+                                totalWithdrawals++;
+                            }
+                        }
+                    }
+                    catch(NumberFormatException | DateTimeParseException e){
+                        // Skip invalid records.
+                    }
+                }
+            }
+        }
+
+      
+        for(Account account : accounts){
+            totalBalance += account.getCurrentBalance();
+        }
+
+        for(String[] row : report2){
+            totalInterestExpenses += Double.parseDouble(row[2]);
+        }
+
+        String summary = "{\n" +
+            "  \"total_accounts\": " + totalAccs + ",\n" +
+            "  \"total_deposits\": " + totalDeposits + ",\n" +
+            "  \"total_withdrawals\": " + totalWithdrawals + ",\n" +
+            "  \"total_balance\": " + String.format("%.2f", totalBalance) + ",\n" +
+            "  \"total_interest_expense\": " + String.format("%.2f", totalInterestExpenses) + "\n" +
+            "}";
+
+        try(BufferedWriter writer = new BufferedWriter(
+            new FileWriter("summary.json"))){
+
+            writer.write(summary);
+        }
+
+        return summary;
+    }
 }
+
 
 
 
