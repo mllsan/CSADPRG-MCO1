@@ -259,8 +259,16 @@ fun RecordExchangeRates(
         println("Invalid Currency Choice.")
     }
 
-    print("Exchange Rate: ")
-    val exchangeRate: Double = readln().toDouble()
+    var exchangeRate: Double
+    while (true) {
+        print("Exchange Rate: ")
+        val rate = readln().trim().toDoubleOrNull()
+        if (rate != null && rate.isFinite() && rate > 0.0) {
+            exchangeRate = rate
+            break
+        }
+        println("Invalid input. Please enter a number")
+    }
 
     var updatedUsd = usdRate
     var updatedJpy = jpyRate
