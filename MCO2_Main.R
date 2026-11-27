@@ -7,6 +7,7 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 library(hms)
+library(glue)
 
 
 #------------------------------------------
@@ -107,7 +108,7 @@ formatdecimal <- function(num){
 
 #prints the Main Menu Prompt
 mainmenu <- function(){
-  cat("\nSelect Transaction:\n[1] Register Account Name\n[2] Deposit Amount\n[3] Withdraw Amount\n[4] Currency Exchange\n[5] Record Exchange Rates\n[6] Show Interest Amount\n\n")
+  cat("\nSelect Transaction:\n[1] Register Account Name\n[2] Deposit Amount\n[3] Withdraw Amount\n[4] Currency Exchange\n[5] Record Exchange Rates\n[6] Show Interest Amount\n[7] Generate Reports\n\n")
 }
 
 #prints the choice made by the user
@@ -164,10 +165,8 @@ registeracc <-function(){
   while (do_while){
     #User Input Account Name
     input <- readline("Account Name: ")
-    input_spilt <- unlist(strsplit(input, split = ", "))
-    accName <- paste(input_spilt[2], input_spilt[1])
     
-    if((accName %in% accounts$account_name | !grepl(", ", input))){
+    if((input %in% accounts$account_name | !grepl(" ", input))){
       cat("Invalid account name. Please follow the format 'lastname, firstname' with letters only.\n\n")
       cat("Register Account Name\n")
     }
@@ -192,15 +191,15 @@ registeracc <-function(){
   }
   
   accNum <- latest_acc_num + count
-  cat("\n***\nAccount Name = ", accName, "\n")
-  cat("\n***\nAccount Number = ",accNum , "\n")
+  cat("\n***\nAccount Name = ", input, "\n")
+  cat("\n***\nAccount Number = ",sprintf("%010d", accNum) , "\n")
   cat("\n***\nInitial Deposit = ", depAmt, "\n")
   
   #Initializes the account 
   bal <- depAmt
   currency <- "PHP"
   
-  new_row <- make_row(accName,accNum, depAmt, "deposit", bal)
+  new_row <- make_row(input,accNum, depAmt, "deposit", bal)
   new_row
 }
 
@@ -407,8 +406,9 @@ exeRates = c(1.00, 62.00, 0.40, 84.00, 72.00, 9.00)
 count = 0
 accounts <- my_data %>% 
   arrange(date, time) %>% 
-  group_by(account_name, account_number) %>%
+  group_by(account_name) %>%
   summarise (
+    account_number = last(account_number),
     current_balance = last(current_balance)
   )
 
@@ -447,33 +447,47 @@ while (active){
       }
     }
   } else if (choice == "2") {
-    
-    cat("Deposit Account\n")
-    accName <- readline("Account Name: ")
-    
-    if(accName %in%  accounts$account_name){
-      account <- accounts %>% 
-        filter(account_name == accName)
+    do_while <- TRUE
+    while (do_while) {
+      cat("Deposit Account\n")
+      accName <- readline("Account Name: ")
       
-      new_row <- deposit(account)
-      my_data <- rbind(my_data, new_row)
-      accounts$current_balance[accounts$account_name == accName] <- new_row['current_balance'] 
-    } else {
-      cat("Account not found. Please input a registered account.\n")
+      if(accName %in%  accounts$account_name){
+        account <- accounts %>% 
+          filter(account_name == accName)
+        
+        new_row <- deposit(account)
+        my_data <- rbind(my_data, new_row)
+        accounts$current_balance[accounts$account_name == accName] <- new_row['current_balance'] 
+      } else {
+        cat("Account not found. Please input a registered account.\n")
+      }
+      
+      choice = readline("Would you like to make another account? (Y/N): ")
+      if (choice == "N"){
+        do_while <- FALSE
+      }
     }
   } else if (choice == "3") {
-    cat("Withdraw Account\n")
-    accName <- readline("Account Name: ")
-    
-    if(accName %in%  accounts$account_name){
-      account <- accounts %>% 
-        filter(account_name == accName)
+    do_while <- TRUE
+    while (do_while) {
+      cat("Withdraw Account\n")
+      accName <- readline("Account Name: ")
       
-      new_row <- withdraw(account)
-      my_data <- rbind(my_data, new_row)
-      accounts$current_balance[accounts$account_name == accName] <- new_row['current_balance'] 
-    } else {
-      cat("Account not found. Please input a registered account.\n")
+      if(accName %in%  accounts$account_name){
+        account <- accounts %>% 
+          filter(account_name == accName)
+        
+        new_row <- withdraw(account)
+        my_data <- rbind(my_data, new_row)
+        accounts$current_balance[accounts$account_name == accName] <- new_row['current_balance'] 
+      } else {
+        cat("Account not found. Please input a registered account.\n")
+      }
+      choice = readline("Would you like to make another account? (Y/N): ")
+      if (choice == "N"){
+        do_while <- FALSE
+      }
     }
     
     
@@ -520,18 +534,74 @@ while (active){
   } else if (choice == "6") {
     cat("Deposit Account\n")
     accName <- readline("Account Name: ")
-    index <- findacc(accName)
-    acc <- accounts[[index]]
+    account <- accounts %>% 
+      filter(account_name == accName)
     
-    cat("Account Name: ", unlist(acc[1]), "\n")
-    cat("Current Balance: ", unlist(acc[2]), "\n")
-    cat("Currency: ", unlist(acc[3]), "\n")
+    cat("Account Name: ", unlist(acc['account_name']), "\n")
+    cat("Current Balance: ", unlist(acc['current_balance']), "\n")
+    cat("Currency: ", "PHP", "\n")
     
     rate <- readline("Interest Rate: ")
     day <- readline("Total Number of Days: ")
-    showinterestamount(rate, day, acc[2])
+    showinterestamount(rate, day, unlist(acc['current_balance']))
+  } else if(choice == "7"){
+    
+    do_while_1 <- TRUE
+    while (do_while_1){
+      
+      do_while_2 <- TRUE
+      while (do_while_2) {
+        cat("Generate Reports\n[1] Load the file\n[2] Generate Reports\n")
+        choice = readline("Choice: ")
+
+        if (choice == "1" | choice == "2"  ){
+          do_while_2 <- FALSE
+        }
+        else {
+          cat("\n\nInvalid Choice.\n\n")
+        }
+      }
+      
+      if (choice == "1"){
+        cat("\nProcessing dataset... (", nrow(my_data)," rows loaded, ", nrow(validate_data(my_data)) ,"filtered for PHP currency)\n\n")
+      }
+      else {
+        source("MCO2_Report.R")
+        
+        cat("\n\nReport 1: Banking Privilege Tiers")
+        cat("\nAccountName | AccountAge | CurrentBalance | AverageDailyBalance | PrivilegeTier\n")
+        rp1 <- rp1 %>% head(2)
+        output <- glue_data(rp1, "{account_name} | {account_age} | {end_of_day_balance} | {average_daily_balance} | {privilege_tier}")
+        cat(output, sep = "\n")
+        cat("\n(Full table exported to report1_banking_privilege_tiers.csv)\n\n")
+        
+        cat("Report 2: Interest Expense Projection")
+        cat("\nAccountName | CurrentBalance | ExpectedInterest\n")
+        rp2 <- rp2 %>% head(2)
+        output <- glue_data(rp2, "{account_name} | {current_balance} | {expected_interest} ")
+        cat(output, sep = "\n")
+        cat("\n(Full table exported to report2_interest_expense_projection.csv)\n\n")
+        
+        cat("Report 3: Suspicious Client Behavior")
+        cat("\nAccountName | Date | TotalWithdrawalAmounts | NumberOfDeposits | TotalDepositAmounts | TurnoverVelocity (%) | RiskFlagLevel\n")
+        rp3 <- rp3 %>% head(2)
+        output <- glue_data(rp3, " {account_name} | {date} | {total_withdrawal} | {total_deposit} | {number_of_deposit} | {turnover_velocity} | {risk_level}")
+        cat(output, sep = "\n")
+        cat("\n(Full table exported to report3_suspicious_client_behavior.csv)\n\n")
+        
+        cat("Report 4: Top 10 Oldest Outstanding Accounts")
+        cat("\nAccountName | CurrentBalance | OpeningDate | AccountAge\n")
+        rp4 <- rp4 %>% head(2)
+        output <- glue_data(rp4, "{account_name} | {current_balance} | {opening_date} | {account_age}")
+        cat(output, sep = "\n")
+        cat("\n(Full table exported to report4_top10_oldest_outstanding_accounts.csv)\n\n")
+        do_while_1 <- FALSE
+        do_while_2 <- FALSE
+      }
+    }  
   } else {
     cat("\n\nInvalid Choice.\n\n")
+    cat("")
   }
   
   
@@ -544,6 +614,3 @@ while (active){
   
   cat("\n")
 }
-
-
-source("MCO2_Report.R")
