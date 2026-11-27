@@ -4,7 +4,6 @@ end_date <- ceiling_date(start_date, "month") - days(1)
 
 days_in_month <- days_in_month(start_date)
 
-# Get opening date of each account
 account_opening_dates <- my_data %>%
   group_by(account_number) %>%
   summarise(
@@ -130,8 +129,6 @@ rp2 <- my_data %>%
 rp2 <- rp2 %>%
   arrange(desc(expected_interest))
 
-
-
 rp3 <- my_data %>%
   group_by(account_number, account_name, date)  %>%
   summarise(
@@ -177,5 +174,6 @@ rp4 <- rp4 %>% head(10)
 write.csv(rp1, "report1_banking_privilege_tiers.csv")
 write.csv(rp2, "report2_interest_expense_projection.csv")
 write.csv(rp3, "report3_suspicious_client_behavior.csv")
-write.csv(rp4, "report4_top10_oldest_accounts_and_greater_than_500000.csv")
+write.csv(rp4, "report4_top10_oldest_outstanding_accounts.csv")
+write.csv(my_data, "bank_transactions.csv")
 
