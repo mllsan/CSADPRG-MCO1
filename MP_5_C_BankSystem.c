@@ -2,7 +2,7 @@
 // Last names: Santos
 // Language: C
 // Paradigm(s): Procedural Programming
-// Run: gcc -Wall -std=c99 BankSystem.c ReportsGenerator.c -lm -o run.exe
+// Run: gcc -Wall -std=c99 MP_5_C_BankSystem.c MP_5_C_ReportsGenerator.c -lm -o run.exe
 // ***********************************
 
 /* preprocessor directives */
@@ -12,8 +12,8 @@
 #include <math.h>
 #include <ctype.h>
 #include <time.h>
-#include "UserInformation.h"
-#include "ReportsGenerator.h"
+#include "MP_5_C_UserInformation.h"
+#include "MP_5_C_ReportsGenerator.h"
 
 /* definitions */
 #define BANK_TRANSACTIONS "bank_transactions.csv"
@@ -371,7 +371,7 @@ void registerAccount(Account RegisteredAcc[], int *activeAccs, int *latestAccNum
     printf("\n***\n");
     printf("Account Name = %s\n", Name);
     printf("Account Number = %d\n", *latestAccNum);
-    printf("Initial Deposti = %.2f\n", initialAmount);
+    printf("Initial Deposit = %.2f\n", initialAmount);
 }
 
 /**
@@ -416,7 +416,7 @@ void depositAmount(Account RegisteredAcc[], int activeAccs) {
             printf("Deposit Amount: ");
 
             if (scanf("%f", &amount) != 1) {
-                while ((c = getchar()) != '\n' && c != EOF) {}
+                while ((c = getchar()) != '\n' && c != EOF);
                 printf("Invalid input. Please enter a number\n");
             } 
             else if (amount <= 0) {
@@ -494,7 +494,7 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
                     printf("Withdraw Amount: ");
 
                     if (scanf("%f", &amount) != 1) {
-                        while ((c = getchar()) != '\n' && c != EOF) {}
+                        while ((c = getchar()) != '\n' && c != EOF);
                         printf("Error: Invalid input. Please enter a number\n");
                     } 
                     else if (amount <= 0) {
@@ -563,7 +563,7 @@ void displayExchangeRate(Currencies Currencies[]) {
         if (scanf(" [%d]", &currencyChoice) == 1 && currencyChoice >= 1 && currencyChoice <= 6) {
             validChoice = 1;
         }
-        while ((c = getchar()) != '\n' && c != EOF) {}
+        while ((c = getchar()) != '\n' && c != EOF);
         if (validChoice == 0) {
             printf("Error: Invalid input. Please enter a number in brackets.\n");
         }
@@ -572,14 +572,14 @@ void displayExchangeRate(Currencies Currencies[]) {
     while (approved == 0) {
         printf("Exchange Rate: ");
         if (scanf("%f", &rate) != 1) {
-            while ((c = getchar()) != '\n' && c != EOF){}
+            while ((c = getchar()) != '\n' && c != EOF);
             printf("Error: Invalid input. Please enter a number.\n\n");
         } 
         else if (rate <= 0) {
             printf("Error: Invalid amount. Please enter a valid positive number.\n\n");
         } 
         else {
-            while ((c = getchar()) != '\n' && c != EOF){}
+            while ((c = getchar()) != '\n' && c != EOF);
             approved = 1;
         }
     }
@@ -617,14 +617,14 @@ void currencyConversion(Currencies Currencies[]) {
             printf("Source Amount: ");
 
             if (scanf("%lf", &sourceAmt) != 1) {
-                while ((c = getchar()) != '\n' && c != EOF){}
+                while ((c = getchar()) != '\n' && c != EOF);
                 printf("Error: Invalid input. Please enter a number.\n");
             } 
             else if (sourceAmt <= 0) {
                 printf("Error: Invalid amount. Please enter a valid positive number.\n");
             } 
             else {
-                while ((c = getchar()) != '\n' && c != EOF){}
+                while ((c = getchar()) != '\n' && c != EOF);
                 approved = 1;
             }
         }
@@ -693,14 +693,14 @@ void showInterestAmount(Account RegisteredAcc[], int activeAccs) {
             while (approved == 0) {
                 printf("Total Number of Days: ");
                 if (scanf("%d", &numberDays) != 1) {
-                    while ((c = getchar()) != '\n' && c != EOF){}
+                    while ((c = getchar()) != '\n' && c != EOF);
                     printf("Error: Invalid input. Please enter a number.\n\n");
                 } 
                 else if (numberDays <= 0 || numberDays > 365) {
                     printf("Error: Invalid Input. Please enter a number between 1 and 365\n\n");
                 } 
                 else {
-                    while ((c = getchar()) != '\n' && c != EOF){}
+                    while ((c = getchar()) != '\n' && c != EOF);
                     approved = 1;
                 }
             }
