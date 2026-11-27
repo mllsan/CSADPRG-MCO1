@@ -263,7 +263,7 @@ public class BankView{
 
         for (int i = 0; i < days; i++) {
 
-            System.out.println((i + 1) + "   | " + String.format("%.2f", interests[i]) + "     | " + String.format("%.2f", balances[i]) + " |");
+            System.out.println(String.format("%-5d | %-10.2f | %-11.2f |",  i + 1, interests[i], balances[i]));
         }
     }
 
