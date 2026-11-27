@@ -18,7 +18,7 @@
 #define PRIVILEGE_REPORT "report1_banking_privilege_tiers.csv"
 #define INTEREST_REPORT "report2_interest_expense_projection.csv"
 #define SUSPICIOUS_REPORT "report3_suspicious_client_behavior.csv"
-#define BALANCE_CHANGE_REPORT "report4_first_last_balance_change.csv"
+#define BALANCE_CHANGE_REPORT "report4_balance_net_change.csv"
 #define SUMMARY_JSON "summary.json"
 #define MAX_SUSPICIOUS_RECORDS 10000
 
