@@ -489,7 +489,14 @@ public class BankModel{
                                         account = new Account(accountName, accNumber, balance);
                                         accounts.add(account);
                                     } else {
-                                        account.setCurrentBalance(balance);
+                                        LocalDate cur_date = account.getLatestDate();
+                                        LocalTime cur_time = account.getLatestTime();
+
+                                        if(date.isAfter(cur_date) || date.isEqual(cur_date) && time.isAfter(cur_time)) {
+                                            account.setCurrentBalance(balance);
+                                            account.setlatest(date);
+                                            account.setTime(time);
+                                        }
                                     }
                                     validRows++;
                                 }
