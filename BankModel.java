@@ -468,8 +468,8 @@ public class BankModel{
                         if(accountName.isEmpty() || !accNumber.matches("[0-9]{10}") || type.isEmpty()){
                             invalidRows++;
                         } else {
-                            LocalDate.parse(data[2].trim(), dateFormat);
-                            LocalTime.parse(data[3].trim(), timeFormat);
+                            LocalDate date = LocalDate.parse(data[2].trim(), dateFormat);
+                            LocalTime time = LocalTime.parse(data[3].trim(), timeFormat);
 
                             double amount = Double.parseDouble(data[5].trim());
                             double balance = Double.parseDouble(data[7].trim());
@@ -489,12 +489,14 @@ public class BankModel{
 
                                     if(account == null){
                                         account = new Account(accountName, accNumber, balance);
+                                        account.setlatest(date);
+                                        account.setTime(time);
                                         accounts.add(account);
                                     } else {
                                         LocalDate cur_date = account.getLatestDate();
                                         LocalTime cur_time = account.getLatestTime();
 
-                                        if(date.isAfter(cur_date) || date.isEqual(cur_date) && time.isAfter(cur_time)) {
+                                        if(cur_date == null || cur_time == null || date.isAfter(cur_date) || (date.isEqual(cur_date) && time.isAfter(cur_time))) {
                                             account.setCurrentBalance(balance);
                                             account.setlatest(date);
                                             account.setTime(time);
