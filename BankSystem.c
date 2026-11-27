@@ -380,8 +380,8 @@ void registerAccount(Account RegisteredAcc[], int *activeAccs, int *latestAccNum
  * @param activeAccs is the number of accounts currently registered in the system
 **/
 void depositAmount(Account RegisteredAcc[], int activeAccs) {
-    float amount = 0.0;
-    int approved = 0, index = 0, validAcc = 0, willRepeat = 0;
+    float amount = 0.0f;
+    int approved = 0, index = 0, validAcc = 0, willRepeat = 0, c = 0;
     char AccName[100], repeat = 'Y';
     Transaction tx;
     FILE *fSave = NULL;
@@ -396,6 +396,7 @@ void depositAmount(Account RegisteredAcc[], int activeAccs) {
         while (validAcc == 0) {
             printf("Account Name: ");
             scanf(" %[^\n]", AccName);
+
             for (int i = 0; i < activeAccs; i++) {
                 if (strcmp(AccName, RegisteredAcc[i].AccountName) == 0) {
                     index = i;
@@ -413,11 +414,18 @@ void depositAmount(Account RegisteredAcc[], int activeAccs) {
 
         while (approved == 0) {
             printf("Deposit Amount: ");
-            scanf("%f", &amount);
-            if (amount <= 0)
+
+            if (scanf("%f", &amount) != 1) {
+                while ((c = getchar()) != '\n' && c != EOF) {
+                }
+                printf("Invalid input. Please enter a number\n");
+            } 
+            else if (amount <= 0) {
                 printf("Error: Invalid amount. Please enter a valid positive number.\n");
-            else
+            } 
+            else {
                 approved = 1;
+            }
         }
 
         RegisteredAcc[index].Balance += amount;
@@ -456,8 +464,8 @@ void depositAmount(Account RegisteredAcc[], int activeAccs) {
  * @param activeAccs is the number of accounts currently registered in the system
 **/
 void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
-    float amount = 0.0;
-    int approved = 0, index = 0, validAcc = 0, willRepeat = 0;
+    float amount = 0.0f;
+    int approved = 0, index = 0, validAcc = 0, willRepeat = 0, c = 0;
     char AccName[100], repeat = 'Y';
     Transaction tx;
     FILE *fSave = NULL;
@@ -485,13 +493,21 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
 
                 while (approved == 0) {
                     printf("Withdraw Amount: ");
-                    scanf("%f", &amount);
-                    if (amount <= 0)
+
+                    if (scanf("%f", &amount) != 1) {
+                        while ((c = getchar()) != '\n' && c != EOF) {
+                        }
+                        printf("Error: Invalid input. Please enter a number\n");
+                    } 
+                    else if (amount <= 0) {
                         printf("Error: Invalid amount. Please enter a valid positive number.\n");
-                    else if (amount <= RegisteredAcc[index].Balance)
+                    } 
+                    else if (amount <= RegisteredAcc[index].Balance) {
                         approved = 1;
-                    else
+                    } 
+                    else {
                         printf("Error: Invalid Amount. Please enter an amount within the balance\n");
+                    }
                 }
 
                 RegisteredAcc[index].Balance -= amount;
@@ -500,7 +516,6 @@ void withdrawAmount(Account RegisteredAcc[], int activeAccs) {
                 setCurrentTimestamp(&tx);
                 fSave = fopen(BANK_TRANSACTIONS, "a");
                 saveData(&RegisteredAcc[index], tx, fSave);
-
             } 
             else if (validAcc == 0) {
                 printf("Error: Account not found. Please input a registered account.\n");
