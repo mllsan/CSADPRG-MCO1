@@ -814,7 +814,7 @@ public class BankModel{
         LocalDate firstDate = LocalDate.parse(firstRecord[1], dateFormatter);
         LocalDate secondDate = LocalDate.parse(secondRecord[1], dateFormatter);
 
-        int compareDate = secondDate.compareTo(firstDate);
+        int compareDate = firstDate.compareTo(secondDate);
 
         if(compareDate != 0){
             return compareDate;
