@@ -6,6 +6,10 @@
 
 package mco1
 
+import kotlin.collections.ArrayList
+
+import java.io.IOException
+
 fun main() {
 
     //rates
@@ -15,7 +19,15 @@ fun main() {
     var eurRate: Double = 72.00
     var cnyRate: Double = 9.00
 
-    val accounts = ArrayList<Account>()
+    // load existing accounts w exception hadnling
+    val loaded = try {
+        loadAccounts()
+    } catch (e: IOException) {
+        println("Error: ${e.message}")
+        return
+    }
+
+    val accounts = loaded.accounts
 
     var choice: Int
     var backToMain: Char = 'Y'
@@ -24,12 +36,13 @@ fun main() {
 
         println(" ")
         println("Select Transaction:")
-        println("[1] Register Account Name")
+        println("[1] Register Account")
         println("[2] Deposit Amount")
         println("[3] Withdraw Amount")
         println("[4] Currency Exchange")
         println("[5] Record Exchange Rates")
         println("[6] Show Interest Amount")
+        println("[7] Generate Reports")
         println(" ")
         //print("Choice: ")
         choice = promptMenuChoice()
@@ -52,7 +65,7 @@ fun main() {
                 cnyRate = newRates[4]
             }
             6 -> ShowInterestAmount(accounts)
-
+            7 -> GenerateReports(accounts)
             else -> println("Invalid choice")
         }
 
