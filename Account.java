@@ -9,6 +9,10 @@
  * Stores the account holder's name and current balance.
  * Each Account object maintains its own balance, allowing miltiple accounts.
  */
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Account{
 
     // ATTRIBUTES
@@ -49,7 +53,6 @@ public class Account{
     public LocalTime getLatestTime(){
         return time;
     }
-
 
         
     //----------------
