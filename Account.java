@@ -15,6 +15,8 @@ public class Account{
     private String accName;
     private String accNumber;
     private double currentBalance;
+    private LocalDate latest;
+    private LocalTime time;
 
     // CONSTRUCTOR
     public Account(String accName, String accNumber, double currentBalance){
@@ -40,6 +42,14 @@ public class Account{
         return currentBalance;
     }
 
+     public LocalDate getLatestDate(){
+        return latest;
+    }
+
+    public LocalTime getLatestTime(){
+        return time;
+    }
+
 
         
     //----------------
@@ -48,5 +58,14 @@ public class Account{
 
     public void setCurrentBalance(double currentBalance){
         this.currentBalance = currentBalance;
+    }
+
+    public void setlatest(LocalDate latest){
+        this.latest = latest;
+
+    }
+    public void setTime(LocalTime time){
+        this.time = time;
+
     }
 }
