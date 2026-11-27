@@ -89,6 +89,7 @@ public class BankModel{
     /**
      * Deposits an amt into the currently selected acc after amt validation
      * @param depositAmt is the amount to be added to the account balance
+     * @param IOException if transaction cannot be saved
      */
     public void setDepositAmt(double depositAmt) throws IOException{
         Account account = findAccount(accName);
@@ -107,6 +108,7 @@ public class BankModel{
      * Withdraws an amt from the currently selected acc if the amt
      * is valid and has sufficient balance
      * @param withdrawAmt is the amount to be deducted from the acc balance
+     * @param IOException if transaction cannot be saved
      */
     public void setWithdrawAmt(double withdrawAmt) throws IOException{
         Account account = findAccount(accName);
@@ -544,6 +546,12 @@ public class BankModel{
     // CSV REPORTS        -
     //---------------------
 
+    /**
+     * Banking Privilege Tiers Report
+     * Calculates ave daily balances for the previous month, assigns privilege tiers, and exports qualified accounts
+     * @return the generated report records
+     * @throws IOException if CSV file cannot be accessed
+     */
     public ArrayList<String[]> generateReport1() throws IOException{
         ArrayList<String[]> transactionRecords = new ArrayList<String[]>();
         ArrayList<String[]> reportRecords = new ArrayList<String[]>();
@@ -673,6 +681,12 @@ public class BankModel{
     return reportRecords;
     }
 
+    /**
+     * Interest Expense Projection Report
+     * Calculates expected interest over 30 days for accounts with >= Php 10000 current balance
+     * @return generated report records
+     * @throws IOException if CSV file cannot be accessed
+     */
     public ArrayList<String[]> generateReport2() throws IOException{
         ArrayList<String[]> reportRecords = new ArrayList<String[]>();
 
@@ -707,6 +721,12 @@ public class BankModel{
         return reportRecords;
     }
 
+    /**
+     * Suspicious Client Behavior Report
+     * Group trnasactions by acc, date, calculates turnover velocity, and identifies suspicious activity
+     * @return generated report records
+     * @throws IOException if CSV file cannot be accessed
+     */
     public ArrayList<String[]> generateReport3() throws IOException{
         ArrayList<String[]> dailyRecords = new ArrayList<String[]>();
         ArrayList<String[]> reportRecords = new ArrayList<String[]>();
@@ -812,7 +832,12 @@ public class BankModel{
         return reportRecords;
     }
 
-
+    /**
+     * Generates the Most Active Bank Accounts report
+     * Counts deposits and withdrawals for each account, sorts by total transactions
+     * @return generated report records
+     * @throws IOException if CSV file cannot be accessed
+     */
     public ArrayList<String[]> generateReport4() throws IOException{
         ArrayList<String[]> transactionRecords = new ArrayList<String[]>();
         ArrayList<String[]> reportRecords = new ArrayList<String[]>();
