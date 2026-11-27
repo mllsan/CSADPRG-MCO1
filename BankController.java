@@ -416,12 +416,15 @@ public class BankController{
                     ArrayList<String[]> report3 = model.generateReport3();
                     ArrayList<String[]> report4 = model.generateReport4();
 
+                    String summary = model.generateSummary(report2);
+
                     view.displayReportsSaved();
 
                     view.displayReport1(report1);
                     view.displayReport2(report2);
                     view.displayReport3(report3);
                     view.displayReport4(report4);
+                    view.displaySummary(summary);
 
                     generating = false;
                 }
