@@ -465,4 +465,13 @@ public class BankView{
         System.out.println();
         System.out.println("Outputs saved to individual files...");
     }
+
+
+    public void displaySummary(String summary){
+
+        System.out.println();
+        System.out.println("Summary State (summary.json):");
+        System.out.println(summary);
+    }
+
 }
