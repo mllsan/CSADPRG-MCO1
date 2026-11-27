@@ -351,7 +351,7 @@ public class BankView{
     }
 
     public void displayInvalidAccName(){
-        System.out.println("Invalid account name. Please follow the format 'lastname, firstname' with letters only.");
+        System.out.println("Invalid account name. Please follow the format 'firstname lastname' with letters only.");
     }
 
     public void displayDuplicateAccount(){
